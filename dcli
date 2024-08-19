@@ -1,0 +1,34 @@
+#!/bin/bash
+
+BLUE_COLOR='\033[0;34m'
+GREEN_COLOR='\033[0;32m'
+NO_COLOR='\033[0m'
+
+# get FOLDER_NAME and create & enter
+printf "$GREEN_COLOR""Folder Name: ""$NO_COLOR"
+read FOLDER_NAME
+mkdir -p "$FOLDER_NAME"
+cd "$FOLDER_NAME"
+
+# get episode numbers
+printf "$GREEN_COLOR""Episode Number: ""$NO_COLOR"
+read EPISODE_NUMBER
+
+#if episodes was 1 then download it with wget
+#otherwise get link with flag then replace number episodes for download
+if [ $EPISODE_NUMBER -gt 1 ]; then
+  printf "$GREEN_COLOR""Link with flag EPISODE: ""$NO_COLOR"
+  read MLINKS
+  for ((epn = 1; epn <= $EPISODE_NUMBER; epn++)); do
+    epNumber=$(printf %02d $epn)
+    wget -c "$(echo $MLINKS | sed "s/EPISODE/$epNumber/")"
+  done
+
+else
+  printf "$GREEN_COLOR""Link: ""$NO_COLOR"
+  read SLINK
+  wget -c "$SLINK"
+fi
+
+# exist folder
+cd ..
