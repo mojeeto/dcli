@@ -13,33 +13,32 @@ function print_message {
 }
 
 # get FOLDER_NAME and create & enter
-#printf '%sFolder Name: %s' "$GREEN_COLOR" "$NO_COLOR"
 print_message "Folder Name: "
 read -r FOLDER_NAME
 mkdir -p "$FOLDER_NAME"
 
 # get episode numbers
-#printf "$GREEN_COLOR""Episode Number: ""$NO_COLOR"
 print_message "Episode Number: "
 read -r EPISODE_NUMBER
 
 #if episodes was 1 then download it with wget
 #otherwise get link with flag then replace number episodes for download
 cd "$FOLDER_NAME" || exit
+rm -rf 'links'
 if [ $((EPISODE_NUMBER)) -gt 1 ]; then
-  #printf "$GREEN_COLOR""Link with flag EPISODE: ""$NO_COLOR"
   print_message "Link with flag EPISODE: "
   read -r MLINKS
   for ((epn = 1; epn <= $((EPISODE_NUMBER)); epn++)); do
     epNumber=$(printf %02d $epn)
-    #wget -c "$(echo $MLINKS | sed "s/EPISODE/$epNumber/")"
-    wget -c "${MLINKS//EPISODE/$epNumber}"
+    NEW_LINK=${MLINKS//EPISODE/$epNumber}
+    echo "$NEW_LINK" >>'links'
+    wget -c "$NEW_LINK"
   done
 
 else
-  #printf "$GREEN_COLOR""Link: ""$NO_COLOR"
   print_message "Link: "
   read -r SLINK
+  echo "$SLINK" >>'links'
   wget -c "$SLINK"
 fi
 
